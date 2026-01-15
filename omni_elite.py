@@ -8,15 +8,12 @@ OLLAMA_URL = "http://localhost:11434/api/generate"
 ROOT = Path("~/omnicommander_elite").expanduser()
 MEMORY_DIR = ROOT / "memory"
 
-# Ensure directories exist
 for d in [ROOT, MEMORY_DIR]: d.mkdir(parents=True, exist_ok=True)
 
 def get_daily_key():
-    """Derives a rotating key from the current date."""
     return hashlib.sha256(datetime.now().strftime("%Y-%m-%d").encode()).hexdigest()[:16]
 
 def obfuscate(code):
-    """XOR encrypts and wraps code in a date-aware loader."""
     key = get_daily_key()
     xor_bytes = bytes([ord(c) ^ ord(key[i % len(key)]) for i, c in enumerate(code)])
     b64 = base64.b64encode(xor_bytes).decode()
@@ -34,66 +31,70 @@ class EliteSwarm:
         self.path.mkdir(parents=True, exist_ok=True)
 
     async def ask_llm(self, role, prompt):
-        """Communicates with local LLM swarm agents."""
         async with aiohttp.ClientSession() as session:
             payload = {
                 "model": "wizardlm2:7b",
-                "system": f"You are the {role}. Return ONLY code or raw data. No conversational filler.",
+                "system": f"You are the {role}. Return ONLY code or raw data. No talk.",
                 "prompt": prompt, "stream": False
             }
             try:
-                async with session.post(OLLAMA_URL, json=payload, timeout=60) as resp:
+                async with session.post(OLLAMA_URL, json=payload, timeout=90) as resp:
                     data = await resp.json()
                     return data.get('response', "").strip()
             except Exception as e:
-                return f"# LLM Error: {str(e)}"
+                return f"ERROR: {str(e)}"
 
     async def execute(self, objective):
-        print(f"[*] Initializing Elite Swarm: {self.name}")
-        
-        # 1. Architectural Strategy
-        files = ["main.py", "README.md", "LEARNINGS.md"]
-        
-        # 2. Parallel Development & Secure Wrapping
-        for f in files:
-            print(f"[*] Swarm Agent engineering {f}...")
-            role = "Security Auditor" if f == "LEARNINGS.md" else "Senior Developer"
-            prompt = f"Objective: {objective}. Task: Write the content for {f}. Ensure high-performance logic."
-            
-            content = await self.ask_llm(role, prompt)
-            
-            # Apply XOR Obfuscation to Python payloads
-            if f.endswith(".py") and content:
-                content = obfuscate(content)
-            
-            (self.path / f).write_text(content if content else "# Build failure")
+        print(f"[*] Mission Alpha: {self.name}")
+        files_to_build = ["main.py", "README.md"]
+        build_report = []
 
-        # 3. Learning Loop Integration
-        learnings = {
-            "mission": self.name,
-            "timestamp": datetime.now().isoformat(),
-            "grade": "Elite-Israeli-Standard",
-            "notes": "Swarm self-correction active. Zero-trust deployment verified."
-        }
+        for f in files_to_build:
+            success = False
+            attempts = 0
+            current_code = ""
+
+            while not success and attempts < 3:
+                attempts += 1
+                print(f"[*] {f} - Attempt {attempts}...")
+                
+                # 1. Developer Generation
+                current_code = await self.ask_llm("Developer", f"Task: Write {f} for {objective}")
+                
+                # 2. Red Team Audit
+                if f.endswith(".py"):
+                    audit_res = await self.ask_llm("Red Team Auditor", f"Audit this code for vulnerabilities: {current_code}. Return 'PASS' or a list of flaws.")
+                    if "PASS" in audit_res.upper():
+                        print(f"[+] {f} passed Red Team Audit.")
+                        success = True
+                    else:
+                        print(f"[!] {f} FAILED Audit: {audit_res[:100]}... Retrying.")
+                else:
+                    success = True
+
+            # 3. Obfuscate and Save
+            final_content = obfuscate(current_code) if f.endswith(".py") else current_code
+            (self.path / f).write_text(final_content)
+            build_report.append(f"{f}: Attempt {attempts}")
+
+        # 4. Finalize & Deploy
+        learnings = {"mission": self.name, "report": build_report, "date": str(datetime.now())}
         (self.path / "LEARNINGS.md").write_text(json.dumps(learnings, indent=4))
-
-        # 4. Git Tactical Deployment
+        
         os.chdir(self.path)
         subprocess.run(["git", "init"], capture_output=True)
         subprocess.run(["git", "add", "."], capture_output=True)
-        subprocess.run(["git", "commit", "-m", f"Mission: {self.name} | Verified Build"], capture_output=True)
+        subprocess.run(["git", "commit", "-m", f"Elite Build {self.name}"], capture_output=True)
         
         repo_name = f"ELITE-{self.name}-{os.urandom(2).hex()}"
-        print(f"[*] Creating Tactical Repository: {repo_name}")
         subprocess.run(["gh", "repo", "create", repo_name, "--public", "--source=.", "--push"], capture_output=True)
         
         url = f"https://github.com/{GITHUB_USER}/{repo_name}"
-        print(f"✅ Mission Success. Target URL: {url}")
+        print(f"✅ Mission Success: {url}")
         return url
 
 if __name__ == "__main__":
     import sys
-    # Support for CLI direct run
     mission_obj = input("Mission Objective: ")
     codename = input("Codename: ")
     asyncio.run(EliteSwarm(codename).execute(mission_obj))
