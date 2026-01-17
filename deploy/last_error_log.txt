@@ -1,0 +1,48 @@
+# Check configuration tokens
+# Ensure build layout
+# Create directory /home/unknown/.buildozer
+# Create directory /home/unknown/.buildozer/cache
+# Create directory /home/unknown/omnicommander_elite/deploy/.buildozer
+# Create directory /home/unknown/omnicommander_elite/deploy/.buildozer/applibs
+# Create directory /home/unknown/.buildozer/android/platform/android/platform
+# Create directory /home/unknown/omnicommander_elite/deploy/.buildozer/android/platform
+# Create directory /home/unknown/omnicommander_elite/deploy/.buildozer/android/app
+# Check configuration tokens
+# Preparing build
+# Check requirements for android
+# Search for Git (git)
+#  -> found at /usr/bin/git
+# Search for Cython (cython)
+#  -> found at /home/unknown/omnicommander_elite/venv/bin/cython
+# Search for Java compiler (javac)
+#  -> found at /usr/lib/jvm/java-21-openjdk-amd64/bin/javac
+# Search for Java keytool (keytool)
+#  -> found at /usr/lib/jvm/java-21-openjdk-amd64/bin/keytool
+# Install platform
+# Run ['git', 'clone', '-b', 'master', '--single-branch', 'https://github.com/kivy/python-for-android.git', 'python-for-android']
+# Cwd /home/unknown/omnicommander_elite/deploy/.buildozer/android/platform
+Cloning into 'python-for-android'...
+# Run ['/home/unknown/omnicommander_elite/venv/bin/python', '-m', 'pip', 'install', '-q', 'appdirs', 'colorama>=0.3.3', 'jinja2', 'sh>=1.10, <2.0; sys_platform!="win32"', 'build', 'toml', 'packaging', 'setuptools']
+# Cwd None
+Traceback (most recent call last):
+  File "/home/unknown/omnicommander_elite/venv/bin/buildozer", line 8, in <module>
+    sys.exit(main())
+             ^^^^^^
+  File "/home/unknown/omnicommander_elite/venv/lib/python3.11/site-packages/buildozer/scripts/client.py", line 13, in main
+    Buildozer().run_command(sys.argv[1:])
+  File "/home/unknown/omnicommander_elite/venv/lib/python3.11/site-packages/buildozer/__init__.py", line 1024, in run_command
+    self.target.run_commands(args)
+  File "/home/unknown/omnicommander_elite/venv/lib/python3.11/site-packages/buildozer/target.py", line 93, in run_commands
+    func(args)
+  File "/home/unknown/omnicommander_elite/venv/lib/python3.11/site-packages/buildozer/target.py", line 103, in cmd_debug
+    self.buildozer.prepare_for_build()
+  File "/home/unknown/omnicommander_elite/venv/lib/python3.11/site-packages/buildozer/__init__.py", line 172, in prepare_for_build
+    self.target.install_platform()
+  File "/home/unknown/omnicommander_elite/venv/lib/python3.11/site-packages/buildozer/targets/android.py", line 612, in install_platform
+    self._install_p4a()
+  File "/home/unknown/omnicommander_elite/venv/lib/python3.11/site-packages/buildozer/targets/android.py", line 720, in _install_p4a
+    cmd([executable, "-m", "pip", "install", "-q", *options, *deps])
+  File "/home/unknown/omnicommander_elite/venv/lib/python3.11/site-packages/buildozer/__init__.py", line 306, in cmd
+    readx = select.select([fd_stdout, fd_stderr], [], [], 1)[0]
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+KeyboardInterrupt

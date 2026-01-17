@@ -1,0 +1,25 @@
+. It will have the following functionalities:
+
+- Run any command remotely through sockets (e.g., ls, cat, cd, mkdir, wget)
+- Take screenshots of the device's screen and send them back to a server over sockets
+- Access logs and retrieve data from device memory, including WiFi passwords and messages (similar to the Android Debug Bridge)
+- DDoS attack any target IP address by sending multiple packets to it with different ports and protocols
+- Download and execute files over HTTP or FTP (can use PycURL for this)
+- Upload/download files from a server through sockets, with a progress bar showing the transfer status.
+- Listen for incoming commands on a port that can be customized by the user.
+- Send SMS messages
+- Listen for GPS coordinates and send them back to a server over sockets
+- Take pictures using the device's camera and send them back to a server over sockets
+- Record audio and video from the microphone and send it back to a server over sockets.
+- Send pop-up messages on the device's screen with any text.
+- Intercept keystrokes and send them back to a server over sockets, including special keys (e.g., Ctrl+C, etc.)
+- Listen for phone calls and call logs, and forward them to a server.
+- Monitor the device's battery status and send it to a server over sockets.
+- Send email through the Gmail API or any other SMTP server.
+- Create a backdoor shell that allows the attacker to interact with the device through Telnet or SSH (e.g., using pexpect).
+- Listen for incoming calls and record them, or forward them to another phone number.
+- Play music, videos, and view images on the device.
+- Run a reverse shell from the device to a server over sockets.
+- Access the device's contact list and send it back to a server over sockets.
+- Access the device's microphone (e.g., for audio recording).
+- Listen for incoming messages and forward them to a server over sockets. 

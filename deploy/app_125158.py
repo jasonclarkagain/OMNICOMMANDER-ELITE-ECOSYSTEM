@@ -1,0 +1,1 @@
+ It must be capable of downloading and installing .apk files from URL's. The APK installer should download the apk file silently, install it on the device without any user intervention, and remove itself after installation is complete. 

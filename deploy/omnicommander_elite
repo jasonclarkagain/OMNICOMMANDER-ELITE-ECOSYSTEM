@@ -1,0 +1,36 @@
+import subprocess
+import os
+
+def run_build():
+    process = subprocess.Popen(
+        ['buildozer', '-v', 'android', 'debug'],
+        stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True
+    )
+    
+    full_log = []
+    for line in process.stdout:
+        print(line, end='')
+        full_log.append(line)
+        
+        # SELF-REPAIR TRIGGER: Detect common Kali/Buildozer failures
+        if "error:" in line.lower() or "failed!" in line.lower():
+            print("\n[!] FAILURE DETECTED. CONSULTING LOCAL LLM FOR REPAIR...")
+            repair_build("".join(full_log[-20:])) 
+            return False
+    return True
+
+def repair_build(error_context):
+    # This is where you'd pipe the error to one of your 20 local LLMs
+    # Logic: "Identify the missing package from this Buildozer error and return the apt command"
+    # For now, let's automate the one we KNOW is hitting you:
+    if "hostpython3" in error_context:
+        print("[+] Auto-Repair: Wiping dirty hostpython and fixing paths...")
+        subprocess.run(['rm', '-rf', '.buildozer/android/platform/build-arm64-v8a/build/other_builds/hostpython3'])
+        # Add the missing Kali paths to the environment
+        os.environ["CFLAGS"] = "-I/usr/include -I/usr/include/x86_64-linux-gnu"
+    
+    # Restart the loop
+    run_build()
+
+if __name__ == "__main__":
+    run_build()
